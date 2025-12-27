@@ -16,7 +16,19 @@ const findUserByEmail = async (email) => {
   return rows[0];
 };
 
+const getUserRoles = async (userId) => {
+  const [rows] = await pool.query(
+    `SELECT r.name 
+     FROM roles r
+     JOIN user_roles ur ON ur.role_id = r.id
+     WHERE ur.user_id = ?`,
+    [userId]
+  );
+  return rows.map(r => r.name);
+};
+
 module.exports = {
   createUser,
-  findUserByEmail
+  findUserByEmail,
+  getUserRoles
 };
