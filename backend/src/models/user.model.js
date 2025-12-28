@@ -27,8 +27,33 @@ const getUserRoles = async (userId) => {
   return rows.map(r => r.name);
 };
 
+const getAllUsers = async () => {
+  const [rows] = await pool.query(
+    "SELECT id, name, email, is_active, created_at FROM users"
+  );
+  return rows;
+};
+
+const assignRoleToUser = async (userId, roleName) => {
+  const [role] = await pool.query(
+    "SELECT id FROM roles WHERE name = ?",
+    [roleName]
+  );
+
+  if (role.length === 0) {
+    throw new Error("Role does not exist");
+  }
+
+  await pool.query(
+    "INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)",
+    [userId, role[0].id]
+  );
+};
+
 module.exports = {
   createUser,
   findUserByEmail,
-  getUserRoles
+  getUserRoles,
+  getAllUsers,
+  assignRoleToUser
 };
