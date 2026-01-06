@@ -10,8 +10,9 @@ const registerUser = async (name, email, password) => {
 
   const passwordHash = await bcrypt.hash(password, 10);
   const userId = await userModel.createUser(name, email, passwordHash);
+  const user = await userModel.findUserByEmail(email);
 
-  return userId;
+  return user;
 };
 
 const loginUser = async (email, password) => {
@@ -31,7 +32,7 @@ const loginUser = async (email, password) => {
     { expiresIn: process.env.JWT_EXPIRES_IN }
   );
 
-  return token;
+  return {user, token};
 };
 
 module.exports = {
