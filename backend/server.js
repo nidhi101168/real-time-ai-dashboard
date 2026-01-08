@@ -17,6 +17,6 @@ const PORT = process.env.PORT || 5000;
       console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("❌ DB connection failed:", error.message);
+    console.error("❌ DB connection is failed:", error.message);
   }
 })();
