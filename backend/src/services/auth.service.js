@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
+const notificationService = require("../services/notifications.service");
+const { getIO } = require("../sockets");
 
 const registerUser = async (name, email, password) => {
   const existingUser = await userModel.findUserByEmail(email);
@@ -17,6 +19,12 @@ const registerUser = async (name, email, password) => {
 
 const loginUser = async (email, password) => {
   const user = await userModel.findUserByEmail(email);
+   await notificationService.sendNotification(getIO, {
+   userId: user.id,
+   type: "LOGIN",
+   message: "New login detected on your account",
+   });
+
   if (!user) {
     throw new Error("Invalid credentials");
   }
