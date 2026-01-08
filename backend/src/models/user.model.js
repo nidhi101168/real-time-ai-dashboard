@@ -34,6 +34,21 @@ const getAllUsers = async () => {
   return rows;
 };
 
+const findById = async (id) => {
+  const [rows] = await pool.query(
+    `SELECT u.id, u.email, r.name AS role
+     FROM users u
+     JOIN user_roles ur ON u.id = ur.user_id
+     JOIN roles r ON ur.role_id = r.id
+     WHERE u.id = ?`,
+    [id]
+  );
+  return rows[0];
+};
+
+
+
+
 const assignRoleToUser = async (userId, roleName) => {
   const [role] = await pool.query(
     "SELECT id FROM roles WHERE name = ?",
@@ -55,5 +70,6 @@ module.exports = {
   findUserByEmail,
   getUserRoles,
   getAllUsers,
-  assignRoleToUser
+  findById,
+  assignRoleToUser,
 };
